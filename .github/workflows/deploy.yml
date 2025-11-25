@@ -2,8 +2,7 @@ name: Deploy to EC2
 
 on:
   push:
-    branches:
-      - main     
+    branches: [ "main" ]
 
 jobs:
   deploy:
@@ -11,23 +10,23 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Deploy to EC2 via SSH
+      - name: Add SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/github_actions
+          chmod 600 ~/.ssh/github_actions
+
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
           script: |
-            cd ~/workout-api
-
-            echo "Pulling latest code..."
+            cd /home/ubuntu/workout-api
             git pull origin main
-
-            echo "Building and restarting containers..."
             docker-compose down
             docker-compose up --build -d
 
-            echo "Deployment finished!"
