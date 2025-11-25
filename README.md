@@ -1,133 +1,102 @@
-# 🏋️‍♂️ Workout Tracker API  
-Node.js + Express + MongoDB + JWT Authentication
+# Workout Tracker API
 
-A simple REST API that allows users to register, log in, and manage workout logs securely.  
-Built with MongoDB Atlas, JWT auth, and a clean MVC structure — perfect as a mid-level backend/DevOps portfolio project.
+A production-ready REST API for tracking workouts, built with **Node.js**, **Express**, **MongoDB**, and fully containerized using **Docker**.  
+Automatic deployment to **AWS EC2** is handled via **GitHub Actions CI/CD**.
 
 ---
 
-## 🚀 Features
+## 🚀 Tech Stack
 
-### 🔐 Authentication
-- User registration  
-- User login  
-- JWT-based authentication  
-- Secure password hashing with bcrypt  
-- Protected routes with middleware  
-
-### 🗄️ Workout Management
-- Create a workout  
-- Get all workouts for the authenticated user  
-
-### 🧰 Tech Stack
-- **Node.js**
-- **Express**
-- **MongoDB + Mongoose**
-- **JWT**
-- **bcryptjs**
-- **dotenv**
+- Node.js / Express  
+- MongoDB Atlas  
+- JWT Authentication  
+- Docker & Docker Compose  
+- GitHub Actions (CI/CD)  
+- AWS EC2 (Ubuntu)
 
 ---
 
 ## 📁 Project Structure
 
-project/
-│── src/
-│ ├── config/
-│ │ └── db.js
-│ ├── controllers/
-│ │ ├── authController.js
-│ │ └── workoutController.js
-│ ├── middleware/
-│ │ └── auth.js
-│ ├── models/
-│ │ ├── User.js
-│ │ └── Workout.js
-│ ├── routes/
-│ │ ├── auth.js
-│ │ └── workouts.js
+├── src
+│ ├── config
+│ ├── controllers
+│ ├── middleware
+│ ├── models
+│ ├── routes
 │ ├── app.js
 │ └── server.js
-│── .env (ignored)
-│── .gitignore
-│── package.json
+├── Dockerfile
+├── docker-compose.yml
+├── package.json
+├── package-lock.json
 └── README.md
 
-
+yaml
+Копировать код
 
 ---
 
-## 🔧 Installation
+## ⚙️ Local Setup
 
-### 1. Clone the repository
-
+### 1. Install dependencies
 ```bash
-git clone https://github.com/TripleK1122/MongoDB.git
-cd MongoDB
-2. Install dependencies
-
 npm install
-3. Create .env file
+2. Create .env file
 
-
-MONGO_URI=your-mongodb-uri
-MONGO_DB_NAME=workout_tracker
-JWT_SECRET=your-secret-key
-JWT_EXPIRES_IN=7d
 PORT=5001
-NODE_ENV=development
-4. Start the server
+MONGO_URI=your_mongo_connection_string
+JWT_SECRET=your_jwt_secret
+3. Start server
 
-npm run dev
-Server runs on:
+npm start
+API will run at:
 
 
 http://localhost:5001
-🔐 API Endpoints
-Auth Routes
-Method	Endpoint	Description
-POST	/api/auth/register	Register new user
-POST	/api/auth/login	Login + get JWT token
+🐳 Running with Docker
+Build and start containers
 
-Workout Routes (Protected)
-Header required:
-Authorization: Bearer <token>
+docker-compose up --build -d
+Check running containers
 
-Method	Endpoint	Description
-POST	/api/workouts	Create a new workout
-GET	/api/workouts	Get all workouts for the user
+docker ps
+API will run at:
 
-🧪 Example Requests
+
+http://localhost:5001
+🔐 Authentication (JWT)
 Register
-
 POST /api/auth/register
-{
-  "email": "test@example.com",
-  "password": "123456"
-}
-Login Response
 
-{
-  "_id": "6925...",
-  "email": "test@example.com",
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-}
-Create Workout
-Headers:
+Login
+POST /api/auth/login
+
+Send JWT token in headers for protected routes:
+
 
 Authorization: Bearer <token>
-Body:
+🔄 CI/CD — GitHub Actions → AWS EC2
+This repository includes an automated deployment pipeline.
+
+When code is pushed to main:
+
+GitHub Actions connects to EC2 via SSH
+
+Pulls the latest code
+
+Stops existing Docker containers
+
+Rebuilds images
+
+Starts the updated stack
+
+Workflow file: .github/workflows/deploy.yml
+
+☁️ Production URL
+
+Once deployed, the API is available at:
+
+http://<EC2_PUBLIC_IP>:5001
 
 
-{
-  "type": "Chest Day",
-  "notes": "Bench press 80kg"
-}
-🛡️ Security
-.env is ignored from Git and safe
-
-Passwords hashed with bcrypt
-
-JWT tokens signed + expiring
-
-MongoDB Atlas credentials hidden locally
